@@ -1,0 +1,15 @@
+{
+    "name": "irfantoor/app",
+    "description": "Application",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Irfan TOOR",
+            "email": "email@irfantoor.com"
+        }
+    ],
+    "require": {
+        "irfantoor/engine": "^0.9.0"
+    }
+}
