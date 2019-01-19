@@ -2,8 +2,8 @@
 
 namespace IrfanTOOR\App;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
 use IrfanTOOR\Collection;
 use IrfanTOOR\Engine\Http\Request;
 

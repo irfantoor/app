@@ -3,9 +3,9 @@
 use IrfanTOOR\Database\Model;
 use Tests\MockModel;
 
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 
-class ModelTest extends TestCase
+class ModelTest extends Test
 {
     protected $dbfile;
 

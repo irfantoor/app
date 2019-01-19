@@ -1,9 +1,9 @@
 <?php
 
 use IrfanTOOR\App\Session;
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 
-class SessionTest extends TestCase
+class SessionTest extends Test
 {
     function setup()
     {
@@ -19,11 +19,9 @@ class SessionTest extends TestCase
     function testSessionInstance()
     {
         $s = $this->session();
+
         $this->assertInstanceOf(IrfanTOOR\App\Session::class, $s);
         $this->assertInstanceOf(IrfanTOOR\Collection::class, $s);
-
-        $s->start();
-        $s->destroy();
     }
 
     function testStart()

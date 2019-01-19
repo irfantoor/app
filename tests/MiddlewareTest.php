@@ -1,12 +1,12 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 use Tests\MockApp;
 use Tests\MockController;
 use Tests\MockControllerWithMiddleware;
 use Tests\MockMiddleware;
 
-class MiddlewareTest extends TestCase
+class MiddlewareTest extends Test
 {
     function app($config = [])
     {

@@ -3,28 +3,38 @@
 namespace IrfanTOOR;
 
 use Exception;
-
 use IrfanTOOR\App\Events;
-use IrfanTOOR\App\Exception as AppException;
-use IrfanTOOR\Engine\Exception as EngineException;
 use IrfanTOOR\App\Router;
+use IrfanTOOR\App\Session;
+use IrfanTOOR\Debug;
 use IrfanTOOR\Engine;
 use IrfanTOOR\Engine\Http\Response;
-
-use IrfanTOOR\Debug;
 
 class App extends Engine
 {
     protected $events;
     protected $router;
+    protected $session;
 
     function __construct($config = [])
     {
+        parent::__construct($config);
+
         $this->events = new Events;
         $this->router = new Router;
 
-        parent::__construct($config);
+        $session_path = $this->config('storage.tmp');
+        if (!$session_path)
+            $session_path = $this->getBasePath() . 'storage/tmp/';
 
+        $this->session = new Session(
+            [
+                'path' => $session_path,
+                'env'  => $this->getEnvironment()->toArray(),
+            ]
+        );
+
+        $this->session->start();
     }
 
     function __call($method, $args)
@@ -73,7 +83,66 @@ Redirecting to <a href="%1$s">%1$s</a>.
         exit;
     }
 
-    function process($request, $response, $args)
+    public function getBasePath()
+    {
+        if (defined('ROOT'))
+            return ROOT;
+
+        foreach (get_included_files() as $file) {
+            if (($pos = strrpos($file, '/vendor/')) !== false) {
+                $path = substr($file, 0, $pos + 1);
+                break;
+            }
+        }
+        
+        return $path;
+    }
+
+    /* These functions will be removed from the version 0.2 */
+    /* as they will be available through parent class rather */
+    /* {START_FUNCTIONS_TO_BE_REMOVED} */
+    public function getCookie()
+    {
+        return $this->Cookie();
+    }
+
+    public function getEnvironment()
+    {
+        return $this->Environment();
+    }
+
+    public function getRequest()
+    {
+        return $this->Request();
+    }
+
+    public function getResponse()
+    {
+        return $this->Response();
+    }
+
+    public function getServerRequest()
+    {
+        return $this->ServerRequest();
+    }
+
+    public function getUploadedFile()
+    {
+        return $this->UploadedFile();
+    }
+
+    public function getUri()
+    {
+        return $this->Uri();
+    }
+    /* {END_FUNCTIONS_TO_BE_REMOVED} */
+
+    public function getSession()
+    {
+        return $this->session;
+    }    
+
+    public function process($request, $response, $args)
     {
         $path = $request->getUri()->getPath();
 

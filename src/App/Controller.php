@@ -2,8 +2,9 @@
 
 namespace IrfanTOOR\App;
 
-use IrfanTOOR\App\Exception;
+use Exception;
 use IrfanTOOR\Collection;
+use IrfanTOOR\App\Session;
 use IrfanTOOR\App\View;
 
 class Controller
@@ -11,24 +12,14 @@ class Controller
     protected $app;
     protected $middlewares = [];
 
-    // protected $data;
-    // protected $session;
-
     public function __construct($app)
     {
         $this->app = $app;
-        // $this->data = new Collection($app->config('data'), []);
-        // $this->session = new Session($app->ServerRequest());
-
-        // $this->data->set('session', $this->session->toArray());
-
-        // $this->set('app', $app);
-        // $this->set('logged', $this->isLogged());
     }
 
     /**
-     * Calling a non-existant method on Engine checks to see if there's an item
-     * in the container returns it or returns a class of the same name.
+     * Calling a non-existant method on Controller checks to see if there's an item
+     * in the App returns it.
      *
      * @param string $method
      * @param array $args
@@ -45,35 +36,10 @@ class Controller
         }
     }
 
-    // public function set($id, $value = null)
-    // {
-    //     $this->data->set($id, $value);
-    // }
-
-    // public function get($id, $default = null)
-    // {
-    //     return $this->data->get($id, $default);
-    // }
-
-    // public function toArray()
-    // {
-    //     return $this->data->toArray();
-    // }
-
-    // function getApp()
-    // {
-    //     return $this->app;
-    // }
-
-    // function getSession()
-    // {
-    //     return $this->session;
-    // }
-
-    // function isLogged()
-    // {
-    //     return $this->getSession()->get('logged', false);
-    // }
+    public function getApp()
+    {
+        return $this->app;
+    }
 
     public function addMiddleware($middleware)
     {
@@ -83,6 +49,7 @@ class Controller
             try {
                 $this->middlewares[$middleware] = new $mw($this);
             } catch(Exception $e) {
+                throw new Exception("App::middleware -- " . $e->getMessage(), 1);
             }
         }
     }

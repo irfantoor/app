@@ -1,11 +1,10 @@
 <?php
 
-use IrfanTOOR\App\Exception;
+use Exception;
 use IrfanTOOR\App\View;
+use IrfanTOOR\Test;
 
-use PHPUnit\Framework\TestCase;
-
-class ViewTest extends TestCase
+class ViewTest extends Test
 {
     protected $path     = __DIR__ . '/views/';
     protected $tmp_path = __DIR__ . '/tmp/';
@@ -55,43 +54,39 @@ class ViewTest extends TestCase
         $v = $this->view();
 
         # prameter tplt must be a string
-        $e = null;
-        $tplt = 123;
-        try {
-            $r = $v->renderToString($tplt, [
-                'hello' => 'Hello World!',
-                'name' => 'someone',
-            ]);            
-        } catch (Exception $e) {}
-
-        $this->assertInstanceOf(Exception::class, $e);
-        $this->assertEquals('prameter tplt must be a string', $e->getMessage());
+        $this->assertException(
+            function() use($v){
+                $tplt = 123;
+                $r = $v->renderToString($tplt, [
+                    'hello' => 'Hello World!',
+                    'name' => 'someone',
+                ]);
+            },
+            Exception::class,
+            'prameter tplt must be a string'
+        );
 
         # provided data must be an associative array
-        $e = null;
-        $tplt = 'hello.tplt';
-        try {
-            $r = $v->renderToString($tplt, 'world');            
-        } catch (Exception $e) {}
-
-        $this->assertInstanceOf(Exception::class, $e);
-        $this->assertEquals('provided data must be an associative array', $e->getMessage());
+        $this->assertException(
+            function() use($v){
+                $tplt = 'hello.tplt';
+                $r = $v->renderToString($tplt, 'world');
+            },
+            Exception::class,
+            'provided data must be an associative array'
+        );
 
         # view file: $file, does not exist
-        $e = null;
-        $tplt = 'home.tplt';
-        try {
-            $r = $v->renderToString($tplt, [
-                'hello' => 'Hello World!',
-                'name' => 'someone',
-            ]);            
-        } catch (Exception $e) {}
-
-        $this->assertInstanceOf(Exception::class, $e);
-        $this->assertEquals(
-            'view file: ' . 
-            __DIR__ . '/views/' . $tplt . 
-            ', does not exist', $e->getMessage()
+        $this->assertException(
+            function() use($v){
+                $tplt = 'home.tplt';
+                $r = $v->renderToString($tplt, [
+                    'hello' => 'Hello World!',
+                    'name' => 'someone',
+                ]);
+            },
+            Exception::class,
+            'view file: ' . __DIR__ . '/views/home.tplt, does not exist'
         );
     }
 

@@ -2,7 +2,7 @@
 
 namespace IrfanTOOR\App;
 
-use IrfanTOOR\App\Exception;
+use Exception;
 use Latte\Engine as LatteEngine;
 
 class View

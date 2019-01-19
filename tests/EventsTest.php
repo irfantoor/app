@@ -1,9 +1,9 @@
 <?php
 
 use IrfanTOOR\App\Events;
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 
-class EventsTest extends TestCase
+class EventsTest extends Test
 {
     function testEventsInstance()
     {

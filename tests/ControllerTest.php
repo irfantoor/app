@@ -3,9 +3,9 @@
 use IrfanTOOR\App\Exception;
 use IrfanTOOR\App\Controller;
 use Tests\MockApp;
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 
-class ControllerTest extends TestCase
+class ControllerTest extends Test
 {
     function app($config = [])
     {
@@ -32,16 +32,22 @@ class ControllerTest extends TestCase
         $e = null;
 
         # Funcltion neither present in Controller nor in App
-        try {
-            $c->hello();
-        } catch (Exception $e1) {}
+        $this->assertException(
+            function() use($c){
+                $c->hello();
+            },
+            Exception::class,
+            "Unknown method: 'hello'"
+        );
 
-        try {
-            $app->hello();
-        } catch (Exception $e2) {}
 
-        $this->assertEquals($e1, $e2);
-        $this->assertEquals('Method: hello, not defined', $e1->getMessage());
+        $this->assertException(
+            function() use($app){
+                $app->hello();
+            },
+            Exception::class,
+            "Unknown method: 'hello'"
+        );
 
         # function present in app but not in Controller
         $r1 = $c->definedInApp();
@@ -50,23 +56,41 @@ class ControllerTest extends TestCase
         $this->assertEquals($r1, $r2);
     }
 
+    function testGetApp()
+    {
+        $c = $this->Controller();
+        $app = $c->getApp();
+        $this->assertInstanceOf(IrfanTOOR\App::class, $app);
+    }
+
     function testAddAndGetMiddlewares()
     {
         $c = $this->controller();
         // $this->assertNull($c->getMiddlewares());
-        $this->assertTrue(is_array($c->getMiddlewares()));
+        $this->assertArray($c->getMiddlewares());
         $this->assertEquals(0, count($c->getMiddlewares()));
 
         $c->addMiddleware('Tests\MockMiddleware');
         $c->addMiddleware('Tests\MockMiddleware');
 
-        $this->assertTrue(is_array($c->getMiddlewares()));
+        $this->assertArray($c->getMiddlewares());
         $this->assertEquals(1, count($c->getMiddlewares()));
         
         foreach ($c->getMiddlewares() as $k => $mw) {
             $this->assertEquals('Tests\MockMiddleware', $k);
             $this->assertInstanceOf(Tests\MockMiddleware::class, $mw);
         }
+    }
+
+    function testDefaultMethod()
+    {
+        $c = $this->controller();
+        $this->assertTrue(method_exists($c, 'defaultMethod'));
+
+        $app = $c->getApp();
+        $res = $app->Response();
+        $r = $c->defaultMethod(null, $res, []);
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $r);
     }
 
     function testShow()

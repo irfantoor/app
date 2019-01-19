@@ -3,9 +3,9 @@
 use Tests\MockApp;
 use Tests\MockController;
 use Tests\MockControllerWithMiddleware;
-use PHPUnit\Framework\TestCase;
+use IrfanTOOR\Test;
 
-class AppTest extends TestCase
+class AppTest extends Test
 {
     function app($config = [])
     {
@@ -95,6 +95,60 @@ class AppTest extends TestCase
         $this->assertEquals('Default Route', $r[1]->getBody()->__toString());        
     }
 
+    /* These tests will be removed from the version 0.2 */
+    /* {START_TESTS_TO_BE_REMOVED} */
+    function testGetCookie()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Cookie::class, $app->GetCookie());
+    }
+
+    function testGetEnvironment()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Environment::class, $app->GetEnvironment());
+    }
+
+    function testGetRequest()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Request::class, $app->GetRequest());
+    }
+
+    function testGetResponse()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $app->GetResponse());
+    }
+
+    function testGetServerRequest()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(
+            IrfanTOOR\Engine\Http\ServerRequest::class, 
+            $app->GetServerRequest()
+        );
+    }
+
+    function testGetUploadedFile()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(
+            IrfanTOOR\Engine\Http\UploadedFile::class, 
+            $app->GetUploadedFile()
+        );
+    }
+
+    function testGetUri()
+    {
+        $app = $this->app();
+        $this->assertInstanceOf(
+            IrfanTOOR\Engine\Http\Uri::class, 
+            $app->GetUri()
+        );
+    }
+    /* {END_TESTS_TO_BE_REMOVED} */
+
     function testProcessClosure()
     {
         # test echo
@@ -131,7 +185,6 @@ class AppTest extends TestCase
         $app->run();
         $r = $app->getResult();
         $this->assertEquals('.ECHO..RETURN.', (string) $r[1]->getBody());
-
 
         # test echo and return not a string type
         $app = $this->app();

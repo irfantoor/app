@@ -2,7 +2,7 @@
 
 namespace IrfanTOOR\App;
 
-use IrfanTOOR\App\Exception;
+use Exception;
 use IrfanTOOR\Collection;
 use IrfanTOOR\Engine\Http\Environment;
 
@@ -21,9 +21,8 @@ class Session extends Collection
         }
 
         $defaults = [
-            'app'  => null,
             'path' => '/tmp/',
-            'env'  => [],
+            'env'  => null,
         ];
 
         foreach ($defaults as $k => $v) {
@@ -32,9 +31,8 @@ class Session extends Collection
             }
         }
 
-        $this->app  = $init['app'];
         $this->path = $init['path'];
-        $this->env  = $init['env'];
+        $this->env  = $init['env'] ?: (new Environment())->toArray();
 
         $started = false;
     }
@@ -45,12 +43,8 @@ class Session extends Collection
             return;
 
         $this->started = true;
-
-        if ($this->app) {
-            $env = $app->Environment();
-        } else {
-            $env = new Environment($this->env);
-        }
+        
+        $env = $this->env;
 
         $this->client_id = md5(
             __NAMESPACE__ .
