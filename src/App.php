@@ -203,7 +203,7 @@ Redirecting to <a href="%1$s">%1$s</a>.
         $response = $controller->$method($request, $response, $args);
 
         # post process of middlewares
-        foreach ($middlewares as $k=>$mw) {
+        foreach ($middlewares as $k => $mw) {
             $response = $mw->postProcess($request, $response, $args);
         }
 

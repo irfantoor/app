@@ -16,7 +16,7 @@
         "latte/latte": "^2.4"
     },
     "require-dev": {
-        "irfantoor/test": "^0.3"
+        "irfantoor/test": "^0.4"
     },
     "autoload": {
         "classmap": [

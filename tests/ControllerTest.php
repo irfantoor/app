@@ -1,6 +1,6 @@
 <?php
 
-use IrfanTOOR\App\Exception;
+use Exception;
 use IrfanTOOR\App\Controller;
 use Tests\MockApp;
 use IrfanTOOR\Test;
