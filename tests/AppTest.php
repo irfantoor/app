@@ -4,6 +4,7 @@ use Tests\MockApp;
 use Tests\MockController;
 use Tests\MockControllerWithMiddleware;
 use IrfanTOOR\Test;
+use IrfanTOOR\App\Constants;
 
 class AppTest extends Test
 {
@@ -32,6 +33,13 @@ class AppTest extends Test
 
         $app = $this->app($config);
         $this->assertEquals('c', $app->config('a.b'));
+    }
+
+    function testGetVersion()
+    {
+        $app = $this->app();
+        $version = Constants::VERSION;
+        $this->assertEquals($version, $app->getVersion());
     }
 
     function testAddRoute() {
@@ -100,25 +108,28 @@ class AppTest extends Test
     function testGetCookie()
     {
         $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Cookie::class, $app->GetCookie());
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Cookie::class, $app->getCookie());
     }
 
     function testGetEnvironment()
     {
         $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Environment::class, $app->GetEnvironment());
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Environment::class, $app->getEnvironment());
     }
 
     function testGetRequest()
     {
         $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Request::class, $app->GetRequest());
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Request::class, $app->getRequest());
     }
 
     function testGetResponse()
     {
         $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $app->GetResponse());
+        $response = $app->getResponse();
+        $this->assertInstanceOf(IrfanTOOR\App\Response::class, $response);
+        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $response);
+        $this->assertEquals(Constants::NAME . ' ' . Constants::VERSION, $response->getHeader('App')[0]);
     }
 
     function testGetServerRequest()
@@ -126,7 +137,7 @@ class AppTest extends Test
         $app = $this->app();
         $this->assertInstanceOf(
             IrfanTOOR\Engine\Http\ServerRequest::class, 
-            $app->GetServerRequest()
+            $app->getServerRequest()
         );
     }
 
@@ -135,7 +146,7 @@ class AppTest extends Test
         $app = $this->app();
         $this->assertInstanceOf(
             IrfanTOOR\Engine\Http\UploadedFile::class, 
-            $app->GetUploadedFile()
+            $app->getUploadedFile()
         );
     }
 
@@ -144,7 +155,7 @@ class AppTest extends Test
         $app = $this->app();
         $this->assertInstanceOf(
             IrfanTOOR\Engine\Http\Uri::class, 
-            $app->GetUri()
+            $app->getUri()
         );
     }
     /* {END_TESTS_TO_BE_REMOVED} */

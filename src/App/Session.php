@@ -12,6 +12,7 @@ class Session extends Collection
     protected $client_id;
     protected $app;
     protected $path;
+    protected $file;
     protected $env = [];
 
     function __construct($init = [])

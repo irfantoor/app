@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "irfantoor/engine": "^1.0",
+        "irfantoor/engine": "^2.0",
         "irfantoor/database": "^0.2",
         "irfantoor/datastore": "^0.2.1",
         "latte/latte": "^2.4"

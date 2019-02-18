@@ -88,7 +88,7 @@ class ControllerTest extends Test
         $this->assertTrue(method_exists($c, 'defaultMethod'));
 
         $app = $c->getApp();
-        $res = $app->Response();
+        $res = $app->getResponse();
         $r = $c->defaultMethod(null, $res, []);
         $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $r);
     }
@@ -98,7 +98,7 @@ class ControllerTest extends Test
         $app = $this->app();
         $c = new Controller($app);
 
-        $res = $app->Response();
+        $res = $app->getResponse();
         $tplt = dirname(__FILE__) . '/views/hello.tplt';
 
         $data = [

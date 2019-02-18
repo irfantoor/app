@@ -3,12 +3,14 @@
 namespace IrfanTOOR;
 
 use Exception;
+use IrfanTOOR\App\Constants;
 use IrfanTOOR\App\Events;
 use IrfanTOOR\App\Router;
 use IrfanTOOR\App\Session;
+use IrfanTOOR\App\Response;
 use IrfanTOOR\Debug;
 use IrfanTOOR\Engine;
-use IrfanTOOR\Engine\Http\Response;
+
 
 class App extends Engine
 {
@@ -18,6 +20,10 @@ class App extends Engine
 
     function __construct($config = [])
     {
+        if (!isset($config['default']['classes']['Response'])) {
+            $config['default']['classes']['Response'] = 'IrfanTOOR\\App\\Response';
+        }
+
         parent::__construct($config);
 
         $this->events = new Events;
@@ -37,14 +43,9 @@ class App extends Engine
         $this->session->start();
     }
 
-    function __call($method, $args)
+    function getVersion()
     {
-        try {
-            $result = parent::__call($method, $args);
-            return $result;
-        } catch(EngineException $e) {
-           throw new AppException("Method: $method, not defined", 1);
-        }
+        return Constants::VERSION;
     }
 
     function addRoute($method, $path, $handler)
@@ -97,45 +98,6 @@ Redirecting to <a href="%1$s">%1$s</a>.
         
         return $path;
     }
-
-    /* These functions will be removed from the version 0.2 */
-    /* as they will be available through parent class rather */
-    /* {START_FUNCTIONS_TO_BE_REMOVED} */
-    public function getCookie()
-    {
-        return $this->Cookie();
-    }
-
-    public function getEnvironment()
-    {
-        return $this->Environment();
-    }
-
-    public function getRequest()
-    {
-        return $this->Request();
-    }
-
-    public function getResponse()
-    {
-        return $this->Response();
-    }
-
-    public function getServerRequest()
-    {
-        return $this->ServerRequest();
-    }
-
-    public function getUploadedFile()
-    {
-        return $this->UploadedFile();
-    }
-
-    public function getUri()
-    {
-        return $this->Uri();
-    }
-    /* {END_FUNCTIONS_TO_BE_REMOVED} */
 
     public function getSession()
     {

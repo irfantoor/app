@@ -25,5 +25,5 @@ class Constants
 {
     public const NAME        = 'Irfan\'s App';
     public const DESCRIPTION = 'Small framework to make your web apps';
-    public const VERSION     = '0.1.2';
+    public const VERSION     = '0.2';
 }

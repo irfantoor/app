@@ -93,11 +93,6 @@ class ViewTest extends Test
     function testSameResultOfRenderAndRenderToString()
     {
         $v = $this->view();
-        $tplt = 'test.tplt';
-        $file = $this->path . $tplt;
-        $contents = file_get_contents($this->path . 'hello.tplt');
-
-        file_put_contents($file, $contents);
 
         ob_start();
         $v->render('hello.tplt', [
@@ -106,7 +101,7 @@ class ViewTest extends Test
         ]);
         $r1 = ob_get_clean();
 
-        $r2 = $v->renderToString('test.tplt', [
+        $r2 = $v->renderToString('hello.tplt', [
             'hello' => 'Hello World!',
             'name' => 'someone',
         ]);

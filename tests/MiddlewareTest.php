@@ -36,8 +36,8 @@ class MiddlewareTest extends Test
         $app = new MockApp();
         $c   = new MockController($app);
         $m   = new MockMiddleware($c);
-        $req = $app->ServerRequest();
-        $res = $app->Response();
+        $req = $app->getServerRequest();
+        $res = $app->getResponse();
 
         # __call calls the controller's defaultMethod
         $r = $m->defaultMethod($req, $res, []);
@@ -46,7 +46,7 @@ class MiddlewareTest extends Test
 
         # __call calls the app's Response
         $r1 = $m->definedMethod($req, $res, []);
-        $r2 = $m->Response();
+        $r2 = $m->getResponse();
         $this->assertNotEquals($res, $r1);
         $this->assertEquals($res, $r2);
         $this->assertSame($res, $r2);
@@ -55,14 +55,14 @@ class MiddlewareTest extends Test
     function testPreProcess()
     {
         $m = $this->middleware();
-        $res = $m->preProcess($m->ServerRequest(), $m->Response(), []);
+        $res = $m->preProcess($m->getServerRequest(), $m->getResponse(), []);
         $this->assertEquals('.pre.', (string) $res->getBody());
     }
 
     function testPostProcess()
     {
         $m = $this->middleware();
-        $res = $m->postProcess($m->ServerRequest(), $m->Response(), []);
+        $res = $m->postProcess($m->getServerRequest(), $m->getResponse(), []);
         $this->assertEquals('.post.', (string) $res->getBody());
     }
 
