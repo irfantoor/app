@@ -9,7 +9,7 @@ class Response extends IeResponse
 {
     function __construct($init = [])
     {
-        $init['headers']['App'] = [Constants::NAME . ' ' . Constants::VERSION];
+        $init['headers']['App'] = Constants::NAME . ' ' . Constants::VERSION;
         parent::__construct($init);
     }
 }

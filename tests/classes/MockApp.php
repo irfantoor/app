@@ -16,6 +16,7 @@ class MockApp extends App
 
     function finalize($request, $response, $args)
     {
+        $response = $response->withHeader('finalize', 'processed');
         $this->result = [$request, $response, $args];
     }
 

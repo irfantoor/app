@@ -29,18 +29,21 @@ class App extends Engine
         $this->events = new Events;
         $this->router = new Router;
 
-        $session_path = $this->config('storage.tmp');
-        if (!$session_path)
-            $session_path = $this->getBasePath() . 'storage/tmp/';
+        # start session, only if enabled
+        if ($this->config('session.enable')) {
+            $session_path = $this->config('storage.tmp');
+            if (!$session_path)
+                $session_path = $this->getBasePath() . 'storage/tmp/';
 
-        $this->session = new Session(
-            [
-                'path' => $session_path,
-                'env'  => $this->getEnvironment()->toArray(),
-            ]
-        );
+            $this->session = new Session(
+                [
+                    'path' => $session_path,
+                    'env'  => $this->getEnvironment()->toArray(),
+                ]
+            );
 
-        $this->session->start();
+            $this->session->start();
+        }
     }
 
     function getVersion()
@@ -101,7 +104,11 @@ Redirecting to <a href="%1$s">%1$s</a>.
 
     public function getSession()
     {
-        return $this->session;
+        if ($this->session) {
+            return $this->session;
+        } else {
+            throw new Exception("Session not enabled", 1);
+        }
     }    
 
     public function process($request, $response, $args)

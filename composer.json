@@ -1,6 +1,6 @@
 {
     "name": "irfantoor/app",
-    "description": "Application",
+    "description": "Small framework to make your web apps",
     "type": "library",
     "license": "MIT",
     "authors": [

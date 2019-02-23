@@ -1,14 +1,23 @@
 <?php
 
+use IrfanTOOR\App\Constants;
+use IrfanTOOR\App\Response;
+use IrfanTOOR\Test;
 use Tests\MockApp;
+use Tests\MockProcessApp;
 use Tests\MockController;
 use Tests\MockControllerWithMiddleware;
-use IrfanTOOR\Test;
-use IrfanTOOR\App\Constants;
 
-class AppTest extends Test
+require dirname(__DIR__) . "/vendor/irfantoor/engine/tests/EngineTest.php";
+
+class AppTest extends EngineTest
 {
     function app($config = [])
+    {
+        return new MockApp($config);
+    }
+
+    public function getEngine($config = [])
     {
         return new MockApp($config);
     }
@@ -102,63 +111,6 @@ class AppTest extends Test
         $r = $app->getResult();
         $this->assertEquals('Default Route', $r[1]->getBody()->__toString());        
     }
-
-    /* These tests will be removed from the version 0.2 */
-    /* {START_TESTS_TO_BE_REMOVED} */
-    function testGetCookie()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Cookie::class, $app->getCookie());
-    }
-
-    function testGetEnvironment()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Environment::class, $app->getEnvironment());
-    }
-
-    function testGetRequest()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Request::class, $app->getRequest());
-    }
-
-    function testGetResponse()
-    {
-        $app = $this->app();
-        $response = $app->getResponse();
-        $this->assertInstanceOf(IrfanTOOR\App\Response::class, $response);
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $response);
-        $this->assertEquals(Constants::NAME . ' ' . Constants::VERSION, $response->getHeader('App')[0]);
-    }
-
-    function testGetServerRequest()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(
-            IrfanTOOR\Engine\Http\ServerRequest::class, 
-            $app->getServerRequest()
-        );
-    }
-
-    function testGetUploadedFile()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(
-            IrfanTOOR\Engine\Http\UploadedFile::class, 
-            $app->getUploadedFile()
-        );
-    }
-
-    function testGetUri()
-    {
-        $app = $this->app();
-        $this->assertInstanceOf(
-            IrfanTOOR\Engine\Http\Uri::class, 
-            $app->getUri()
-        );
-    }
-    /* {END_TESTS_TO_BE_REMOVED} */
 
     function testProcessClosure()
     {
@@ -269,5 +221,17 @@ class AppTest extends Test
         $app->run();        
         $r = $app->getResult();
         $this->assertEquals('.pre.defaultMethod.post.', (string) $r[1]->getBody());
+    }
+
+    public function testProcess()
+    {
+        $ie = new MockProcessApp();
+        $ie->run();
+        $result = $ie->getResult();
+        $res = $result[1];
+
+        # assert the actions in the process phase
+        $this->assertEquals('Hello World!', $res->getBody()->__toString());
+        $this->assertEquals('Engine: MyEngine 0.1 (test)', $res->getHeaderLine('engine'));
     }
 }
