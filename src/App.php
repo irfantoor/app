@@ -6,8 +6,6 @@ use Exception;
 use IrfanTOOR\App\Constants;
 use IrfanTOOR\App\Events;
 use IrfanTOOR\App\Router;
-use IrfanTOOR\App\Session;
-use IrfanTOOR\App\Response;
 use IrfanTOOR\Debug;
 use IrfanTOOR\Engine;
 
@@ -20,29 +18,36 @@ class App extends Engine
 
     function __construct($config = [])
     {
-        if (!isset($config['default']['classes']['Response'])) {
-            $config['default']['classes']['Response'] = 'IrfanTOOR\\App\\Response';
+        $defaults = [
+            # default factories
+            'Response' => 'IrfanTOOR\\App\\Response',
+            'Session'  => 'IrfanTOOR\\App\\Session',
+        ];
+
+        foreach ($defaults as $k => $v) {
+            if (!isset($config['default']['classes'][$k])) {
+                $config['default']['classes'][$k] = $v;
+            }
         }
 
         parent::__construct($config);
+
+        # Factory functions for Cookie and Uploaded file
+        $this->container->set('Session', function() use ($session_class){
+            $cname = $this->config('default.classes.Session');
+            return new $cname([
+                'path' => ROOT . 'storage/sessions/',
+                'env'  => $this->getEnvironment()->toArray(),
+            ]);
+        });
 
         $this->events = new Events;
         $this->router = new Router;
 
         # start session, only if enabled
         if ($this->config('session.enable')) {
-            $session_path = $this->config('storage.tmp');
-            if (!$session_path)
-                $session_path = $this->getBasePath() . 'storage/tmp/';
-
-            $this->session = new Session(
-                [
-                    'path' => $session_path,
-                    'env'  => $this->getEnvironment()->toArray(),
-                ]
-            );
-
-            $this->session->start();
+            $session = $this->getSession();
+            $session->start();
         }
     }
 
@@ -56,12 +61,12 @@ class App extends Engine
         $this->router->addRoute($method, $path, $handler);
     }
 
-    function register($event_id, $callback, $level = 10)
+    function registerEvent($event_id, $callback, $level = 10)
     {
         $this->events->register($event_id, $callback, $level = 10);
     }
 
-    function trigger($event_id)
+    function triggerEvent($event_id)
     {
         $this->events->trigger($event_id);
     }
@@ -93,23 +98,15 @@ Redirecting to <a href="%1$s">%1$s</a>.
             return ROOT;
 
         foreach (get_included_files() as $file) {
-            if (($pos = strrpos($file, '/vendor/')) !== false) {
+            if (($pos = strrpos($file, '/vendor/autoload.php')) !== false) {
                 $path = substr($file, 0, $pos + 1);
                 break;
             }
         }
-        
+
+        define('ROOT', $path);
         return $path;
     }
-
-    public function getSession()
-    {
-        if ($this->session) {
-            return $this->session;
-        } else {
-            throw new Exception("Session not enabled", 1);
-        }
-    }    
 
     public function process($request, $response, $args)
     {
@@ -177,5 +174,12 @@ Redirecting to <a href="%1$s">%1$s</a>.
         }
 
         return $response;
+    }
+
+    function finalize($request, $response, $args)
+    {
+        $this->triggerEvent('finalize');
+
+        return parent::finalize($request, $response, $args);
     }
 }

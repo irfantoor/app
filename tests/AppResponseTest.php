@@ -1,6 +1,5 @@
 <?php
 
-use Exception;
 use IrfanTOOR\App\Constants;
 use IrfanTOOR\App\Response;
 use IrfanTOOR\Test;

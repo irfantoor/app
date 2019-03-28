@@ -3,7 +3,7 @@
 namespace IrfanTOOR\App;
 
 use Exception;
-use Latte\Engine as LatteEngine;
+use IrfanTOOR\TemplateEngine;
 
 class View
 {
@@ -35,14 +35,11 @@ class View
         if (!is_array($data))
             throw new Exception("provided data must be an associative array", 1);
 
-        $file = $this->path . $tplt;
+        $te = new TemplateEngine([
+            'base_path' => $this->path
+        ]);
 
-        if (!file_exists($file))
-            throw new Exception("view file: $file, does not exist", 1);
-
-        $latte = new LatteEngine();
-        $latte->setTempDirectory($this->tmp_path);
-        $latte->render($file, $data);
+        echo $te->processFile($tplt, $data);
     }
 
     function renderToString($tplt, $data = [])

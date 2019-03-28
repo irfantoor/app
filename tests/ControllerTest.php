@@ -90,7 +90,7 @@ class ControllerTest extends Test
         $app = $c->getApp();
         $res = $app->getResponse();
         $r = $c->defaultMethod(null, $res, []);
-        $this->assertInstanceOf(IrfanTOOR\Engine\Http\Response::class, $r);
+        $this->assertInstanceOf(IrfanTOOR\App\Response::class, $r);
     }
 
     function testShow()

@@ -2,8 +2,13 @@
 
 namespace IrfanTOOR\App;
 
-use IrfanTOOR\Collection\ReadonlyCollection;
+use IrfanTOOR\Collection;
 
-class Config extends ReadonlyCollection
+class Config extends Collection
 {
+    function __construct($init)
+    {
+        parent::__construct($init);
+        $this->lock();
+    }
 }

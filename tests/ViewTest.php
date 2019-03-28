@@ -1,6 +1,5 @@
 <?php
 
-use Exception;
 use IrfanTOOR\App\View;
 use IrfanTOOR\Test;
 
@@ -86,7 +85,7 @@ class ViewTest extends Test
                 ]);
             },
             Exception::class,
-            'view file: ' . __DIR__ . '/views/home.tplt, does not exist'
+            'file: ' . __DIR__ . '/views/home.tplt, not found'
         );
     }
 

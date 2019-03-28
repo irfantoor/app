@@ -5,15 +5,14 @@ namespace IrfanTOOR\App;
 use Exception;
 use IrfanTOOR\Collection;
 use IrfanTOOR\Engine\Http\Environment;
+use IrfanTOOR\Datastore;
 
 class Session extends Collection
 {
     protected $started;
     protected $client_id;
-    protected $app;
-    protected $path;
-    protected $file;
-    protected $env = [];
+    protected $ds;
+    protected $env;
 
     function __construct($init = [])
     {
@@ -32,8 +31,8 @@ class Session extends Collection
             }
         }
 
-        $this->path = $init['path'];
-        $this->env  = $init['env'] ?: (new Environment())->toArray();
+        $this->ds = new Datastore(['path' => $init['path']]);
+        $this->env = ($init['env']) ?: (new Environment())->toArray();
 
         $started = false;
     }
@@ -44,7 +43,7 @@ class Session extends Collection
             return;
 
         $this->started = true;
-        
+
         $env = $this->env;
 
         $this->client_id = md5(
@@ -62,13 +61,12 @@ class Session extends Collection
             $env['REMOTE_ADDR']
         );
 
-        $this->file = $this->path . $this->client_id . '.json';
-
-        if (file_exists($this->file)) {
-            $s = json_decode(file_get_contents($this->file), 1);
+        if ($this->ds->hasKey($this->client_id)) {
+            $s = json_decode($this->ds->getContents($this->client_id), 1);
         } else {
             $s = [
-                'created_at' => $env['REQUEST_TIME'],
+                'sid' => $this->client_id,
+                'created_at' => time(),
                 'updated_at' => 0,
                 'tokens' => [],
             ];
@@ -79,12 +77,28 @@ class Session extends Collection
         register_shutdown_function([$this, 'save']);
     }
 
-    function set($key, $value = null)
+    function getToken($token)
+    {
+        if (!$this->started)
+            return null;
+
+        return $this->get('tokens.' . $token);
+    }
+
+    function setToken($token, $value)
     {
         if (!$this->started)
             return;
 
-        parent::set($key, $value);
+        $this->set('tokens.' . $token, $value);
+    }
+
+    function removeToken($token)
+    {
+        if (!$this->started)
+            return false;
+
+        return $this->remove('tokens.' . $token);
     }
 
     function save()
@@ -93,7 +107,12 @@ class Session extends Collection
             return;
 
         $contents = json_encode($this->toArray());
-        file_put_contents($this->file, $contents);
+        $this->ds->setComposite(
+            [
+                'key' => $this->client_id,
+                'contents' => $contents
+            ]
+        );
     }
 
     function close()
@@ -105,6 +124,6 @@ class Session extends Collection
     function destroy()
     {
         $this->close();
-        unlink($this->file);
+        $this->ds->removeContents($this->client_id);
     }
 }

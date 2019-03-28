@@ -5,15 +5,21 @@ use IrfanTOOR\Test;
 
 class SessionTest extends Test
 {
+    protected $session = null;
+
     function setup()
     {
     }
 
     function session()
     {
-        return new Session([
-            'path' => __DIR__ . '/tmp/'
-        ]);
+        if (!$this->session) {
+            $this->session = new Session([
+                'path' => __DIR__ . '/tmp/'
+            ]);
+        }
+
+        return $this->session;
     }
 
     function testSessionInstance()
@@ -29,23 +35,25 @@ class SessionTest extends Test
         $s = $this->session();
         $this->assertEquals([], $s->toArray());
 
-        $s->set('tokens.hello', 'world');
-        $this->assertNull($s->get('tokens.hello'));
+        $s->setToken('hello', 'world');
+        $this->assertNull($s->getToken('hello'));
 
         $s->start();
+
         $this->assertNotEquals([], $s->toArray());
         $this->assertEquals([], $s->get('tokens'));
 
-        $s->set('tokens.hello', 'world');
-        $this->assertEquals('world', $s->get('tokens.hello'));
+        $s->setToken('hello', 'world');
+        $this->assertEquals('world', $s->getToken('hello'));
 
         $s->save();
         $s->close();
-        $this->assertNull($s->get('tokens.hello'));
+        $this->assertNull($s->getToken('hello'));
 
         $s->start();
-        $this->assertEquals('world', $s->get('tokens.hello'));
-        $s->remove('tokens.hello');
+        $this->assertEquals('world', $s->getToken('hello'));
+        $s->removeToken('hello');
+        $this->assertNull($s->getToken('hello'));
         $s->save();
         $s->close();
     }
@@ -65,9 +73,21 @@ class SessionTest extends Test
         $this->assertTrue($d['updated_at'] > 0);
         $this->assertEquals([], $d['tokens']);
 
-        $this->assertEquals($d['created_at'], $s->get('created_at'));
-        $this->assertEquals($d['updated_at'], $s->get('updated_at'));
-        $this->assertEquals($d['tokens'], $s->get('tokens'));
+        $created_at = $d['created_at'];
+
+        sleep(1);
+        $d = $s->start();
+        $d = $s->toArray();
+        $this->assertTrue($d['created_at'] > 0);
+        $this->assertEquals($created_at, $d['created_at']);
+
+        $s->destroy();
+        sleep(1);
+
+        $d = $s->start();
+        $d = $s->toArray();
+        $this->assertTrue($d['created_at'] > 0);
+        $this->assertNotEquals($created_at, $d['created_at']);
     }
 
     function testSave()
@@ -105,6 +125,7 @@ class SessionTest extends Test
     function testClose()
     {
         $s = $this->session();
+        $s->close();
         $this->assertNull($s->get('created_at'));
 
         $s->start();
@@ -126,8 +147,8 @@ class SessionTest extends Test
 
         $s->start();
         $this->assertEquals('dd my world!', $s->get('tokens.hello'));
-
         $s->destroy();
+
         $s->start();
         $this->assertNull($s->get('tokens.hello'));
         $s->destroy();
