@@ -85,7 +85,7 @@ class ViewTest extends Test
                 ]);
             },
             Exception::class,
-            'file: ' . __DIR__ . '/views/home.tplt, not found'
+            'file: home.tplt, not found'
         );
     }
 

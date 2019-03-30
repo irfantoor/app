@@ -13,8 +13,8 @@ class View
     function __construct($init = [])
     {
         $defaults = [
-            'path'     => '',
-            'tmp_path' => '/tmp/',
+            'path'     => defined('APP') ? APP . 'View/' : '',
+            'tmp_path' => defined('STORAGE') ? STORAGE . '/tmp/' : '/tmp/',
         ];
 
         foreach ($defaults as $k => $v) {
