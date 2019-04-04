@@ -32,6 +32,8 @@ class App extends Engine
 
         parent::__construct($config);
 
+        $session_class = $this->config('default.classes.Session');
+
         # Factory functions for Cookie and Uploaded file
         $this->container->set('Session', function() use ($session_class){
             $cname = $this->config('default.classes.Session');
@@ -71,10 +73,12 @@ class App extends Engine
         $this->events->trigger($event_id);
     }
 
-    function redirectTo($url, $status = 307)
+    function redirectTo($url, $status = null)
     {
-        $response = new Response(['status' => $status]);
-        $response
+        $status = $status ?: 307;
+        $response = $this->getResponse();
+        $response = $response
+            ->withStatus($status)
             ->withHeader('Location', $url)
             ->write(sprintf('<!DOCTYPE html>
 <html>
@@ -86,10 +90,9 @@ class App extends Engine
 <body>
 Redirecting to <a href="%1$s">%1$s</a>.
 </body>
-</html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8')))
-            ->send();
+</html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8')));
 
-        exit;
+        return $response;
     }
 
     public function getBasePath()

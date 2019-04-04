@@ -109,7 +109,43 @@ class AppTest extends EngineTest
 
         $app->run();
         $r = $app->getResult();
-        $this->assertEquals('Default Route', $r[1]->getBody()->__toString());        
+        $this->assertEquals('Default Route', $r[1]->getBody()->__toString());
+    }
+
+    function testRedirectTo()
+    {
+        $app = $this->app();
+        $app->addRoute('GET', '.*', function($request, $response, $args) use ($app){
+            return $app->redirectTo('/hello/world');
+        });
+
+        $app->run();
+        $r = $app->getResult()[1];
+        $body = <<<END
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="refresh" content="0;url=/hello/world" />
+<title>Redirecting to /hello/world</title>
+</head>
+<body>
+Redirecting to <a href="/hello/world">/hello/world</a>.
+</body>
+</html>
+END;
+        $this->assertEquals(307, $r->getStatusCode());
+        $this->assertEquals($body, $r->getBody()->__toString());
+        $this->assertEquals('/hello/world', $r->getHeader('location')[0]);
+
+        $app = $this->app();
+        $app->addRoute('GET', '.*', function($request, $response, $args) use ($app){
+            return $app->redirectTo('/hello/world/temp', 302);
+        });
+
+        $app->run();
+        $r = $app->getResult()[1];
+        $this->assertEquals(302, $r->getStatusCode());
     }
 
     function testProcessClosure()
@@ -124,7 +160,6 @@ class AppTest extends EngineTest
         $app->run();
         $r = $app->getResult();
         $this->assertEquals('.ECHO.', (string) $r[1]->getBody());
-
 
         # test return
         $app = $this->app();
