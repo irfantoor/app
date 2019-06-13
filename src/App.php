@@ -3,7 +3,7 @@
 namespace IrfanTOOR;
 
 use Exception;
-use IrfanTOOR\App\Constants;
+use IrfanTOOR\App;
 use IrfanTOOR\App\Events;
 use IrfanTOOR\App\Router;
 use IrfanTOOR\Debug;
@@ -12,6 +12,10 @@ use IrfanTOOR\Engine;
 
 class App extends Engine
 {
+    const NAME        = "Irfan's App";
+    const DESCRIPTION = "Small framework to make your web apps";
+    const VERSION     = "0.2.5"; //@@VERSION
+
     protected $events;
     protected $router;
     protected $session;
@@ -55,7 +59,7 @@ class App extends Engine
 
     function getVersion()
     {
-        return Constants::VERSION;
+        return self::VERSION;
     }
 
     function addRoute($method, $path, $handler)

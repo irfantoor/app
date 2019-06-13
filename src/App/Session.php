@@ -73,7 +73,7 @@ class Session extends Collection
         }
 
         $s['updated_at'] = $env['REQUEST_TIME'];
-        $this->set($s);
+        $this->setMultiple($s);
         register_shutdown_function([$this, 'save']);
     }
 

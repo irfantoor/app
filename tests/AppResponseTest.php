@@ -1,6 +1,6 @@
 <?php
 
-use IrfanTOOR\App\Constants;
+use IrfanTOOR\App;
 use IrfanTOOR\App\Response;
 use IrfanTOOR\Test;
 
@@ -41,7 +41,7 @@ class AppResponseTest extends ResponseTest
         
         $this->assertEquals('1.1', $response->getProtocolVersion());
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals(Constants::NAME . ' ' . Constants::VERSION, $response->getHeaders()['App'][0]);
+        $this->assertEquals(App::NAME . ' ' . App::VERSION, $response->getHeaders()['App'][0]);
         $this->assertEquals('', $response->getBody());
     }
 }

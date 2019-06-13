@@ -1,6 +1,6 @@
 <?php
 
-use IrfanTOOR\App\Constants;
+use IrfanTOOR\App;
 use IrfanTOOR\App\Response;
 use IrfanTOOR\Test;
 use Tests\MockApp;
@@ -47,7 +47,7 @@ class AppTest extends EngineTest
     function testGetVersion()
     {
         $app = $this->app();
-        $version = Constants::VERSION;
+        $version = App::VERSION;
         $this->assertEquals($version, $app->getVersion());
     }
 
