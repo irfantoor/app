@@ -10,13 +10,14 @@
         }
     ],
     "require": {
-        "irfantoor/engine": "^2.0",
+        "php": ">= 7.3",
+        "irfantoor/engine": "^2.1",
         "irfantoor/database": "^0.2.6",
         "irfantoor/datastore": "^0.3.4",
-        "irfantoor/template-engine": "^0.1.4"
+        "irfantoor/template-engine": "^0.2.1"
     },
     "require-dev": {
-        "irfantoor/test": "^0.5.1"
+        "irfantoor/test": "^0.6.1"
     },
     "autoload": {
         "classmap": [
