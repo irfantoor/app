@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">= 7.3",
-        "irfantoor/engine": "^2.1",
+        "irfantoor/engine": "^3.0",
         "irfantoor/database": "^0.2.6",
         "irfantoor/datastore": "^0.3.4",
         "irfantoor/template-engine": "^0.2.1"
