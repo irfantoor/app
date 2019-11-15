@@ -14,7 +14,7 @@ class App extends Engine
 {
     const NAME        = "Irfan's App";
     const DESCRIPTION = "Small framework to make your web apps";
-    const VERSION     = "0.3.1"; //@@VERSION
+    const VERSION     = "0.3.2"; //@@VERSION
 
     protected $events;
     protected $router;

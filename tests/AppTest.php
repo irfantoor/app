@@ -70,11 +70,11 @@ class AppTest extends EngineTest
         $this->assertEquals('Home', $r[1]->getBody()->__toString());
 
         # Defined Route
-        $app = $this->app([
+        $app = new MockApp([
             'default' => [
-                'ServerRequest' => [
-                    'uri' => 'http://example.com/hello',
-                ]
+                'Uri' => [
+                    'host' => 'exmample.com/hello',
+                ],
             ]
         ]);
 
@@ -93,9 +93,9 @@ class AppTest extends EngineTest
         # Default Route
         $app = $this->app([
             'default' => [
-                'ServerRequest' => [
-                    'uri' => 'http://example.com/helloworld',
-                ]
+                'Uri' => [
+                    'host' => 'exmample.com/helloworld',
+                ],
             ]
         ]);
 
